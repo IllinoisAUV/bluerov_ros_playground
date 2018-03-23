@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="log_output" default="log"/>
+    <arg name="gui" default="true" />
     <arg name="model" default="$(find bluerov_ros_playground)/model/BlueRov2.urdf.xacro"/>
 
     <arg name="fcu_url" default="udp://:14551@127.0.0.1:14549"/>
@@ -15,6 +16,7 @@
     <!-- Launch Gazebo with underwater world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
         <arg name="paused" value="false"/>
+        <arg name="gui" value="$(arg gui)" />
         <arg name="world_name" value="$(find freefloating_gazebo)/world/underwater.world"/>
     </include>
 
@@ -45,7 +47,7 @@
     <node pkg="rosservice" type="rosservice" name="mavros_set_stream" args="call --wait /mavros/set_stream_rate 0 10 1"/>
 
     <!-- start the image_view -->
-    <node respawn="true" pkg="image_view" type="image_view" name="image_view">
+    <node respawn="true" pkg="image_view" type="image_view" name="image_view" if="$(arg gui)">
         <remap from="image" to="/BlueRov2/camera/image_raw" />
     </node>
 
